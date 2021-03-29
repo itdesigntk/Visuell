@@ -6,8 +6,19 @@ function startPage () {
     $(document).ready(function() {
         $('.js-example-basic-single').select2();
     });
-}
+    $('.js-example-basic-single').on('select2:select', function (e) {
+        var data = e.params.data;
+        console.log(data);
 
+        var index = Array.from(data.element.parentElement.children).indexOf(data.element)
+
+        document.getElementsByClassName('courseName')[index].click()
+    });
+    $('.js-example-basic-single').on('select2:open', function (e) {
+        var div = document.querySelector("body > span > span > span.select2-search.select2-search--dropdown > input")
+        div.focus();
+    });
+}
 
 
 // Declare all helper functions here:
@@ -63,19 +74,15 @@ function helper_createSideBarHTML (classTitle, id) {
     pushWrap.innerHTML = classTitle
 
     pushWrap.onclick = function () {
-        getCourseWork(this.classList[1]);
+        $('#mySelect2').val(this.innerHTML);
+
+        var index = Array.from(this.parentElement.children).indexOf(this)
+        animateCourseSwitch(index, false, this)
+
         Array.prototype.forEach.call(document.getElementsByClassName('courseName'), function(el) {
             el.classList.remove('active')
         })
         this.classList.add('active')
-
-        var elClicked = this
-
-        Array.prototype.forEach.call(document.querySelector('.classind').children, function(option) {
-            if (option.innerHTML == elClicked.innerHTML) {
-                document.querySelector('.classind').value = option.value
-            } 
-        })
     }
 
     var optEl = document.createElement('option')
@@ -272,4 +279,88 @@ button.onclick = switchClass
 
 function switchClass () {
 
+}
+
+var wrapStatus;
+
+
+function animateCourseSwitch (indexOfElToSwitchTo, wantClick, elRef) {
+
+    var siblings = document.querySelector('.sidebar').children 
+    var indexOfCurrentEl;
+
+    if (document.querySelector('.courseName.active')) {
+        indexOfCurrentEl = Array.from(siblings).indexOf(document.querySelector('.courseName.active'))
+    } else {
+        indexOfCurrentEl = -1;
+    }
+
+    var wrap = document.querySelector('.assignmentList');
+
+    var x = indexOfCurrentEl
+    var y = indexOfElToSwitchTo
+
+    var whooshOutLeft = '0.2s cubic-bezier(.61,.61,.8,.86) 0s 1 normal forwards running whooshOutLeft'
+    var whooshOutRight = '0.2s cubic-bezier(.61,.61,.8,.86) 0s 1 normal forwards running whooshOutRight'
+
+    var whooshInLeft = '0.3s cubic-bezier(.59,.94,.62,.96) 0s 1 normal forwards running whooshInLeft'
+    var whooshInRight = '0.3s cubic-bezier(.59,.94,.62,.96) 0s 1 normal forwards running whooshInRight'
+
+    if (x == y) return;
+
+    if (y > x) {
+        // If the course we are switching to is AFTER the current course
+        wrap.style.animation = whooshOutLeft
+
+        setTimeout(function() {
+            var checkHTMLInterval = setInterval(function() {
+                if (checkHTML() == true) {
+                    console.log('wow')
+                    wrap.style.animation = whooshInRight
+                    clearInterval(checkHTMLInterval)
+                } 
+            }, 10);
+        }, 200)
+    }
+
+    if (y < x) {
+        // If the course we are switching to is BEFORE the current course
+        wrap.style.animation = whooshOutRight
+
+        setTimeout(function() {
+            var checkHTMLInterval = setInterval(function() {
+                if (checkHTML() == true) {
+                    console.log('wow')
+                    wrap.style.animation = whooshInLeft
+                    clearInterval(checkHTMLInterval)
+                } 
+            }, 10);
+        }, 200)
+    }
+
+
+    if (document.querySelector('.courseName.active')) {
+        setTimeout(function() {
+            getCourseWork(elRef.classList[1]);
+        }, 150)
+    } else {
+        getCourseWork(elRef.classList[1]);
+    }
+
+}
+
+
+
+
+function checkHTML () {
+
+    var wrap = document.querySelector('.assignmentList');
+
+    if (wrap && wrap.children.length > 0){
+        wrapStatus = true
+    } else {
+        wrapStatus = false
+    }
+
+    return wrapStatus;
 }
