@@ -184,6 +184,8 @@ function getCourseWork (CID, passive) {
 				array_to_push = response.result.courseWorkMaterial
 				masterArray = courseWorkArray.concat(array_to_push)
 
+				var topicLessItems = [];
+
 				// For each topic, check if the item is in the topic:
 				topics.forEach(function(t) {
 
@@ -192,10 +194,39 @@ function getCourseWork (CID, passive) {
 						const courseItemId = c.topicId
 						const topicId = t.topicId
 
+						// IF THE ITEM IS IN THE COURSE AND NOT UNDER A TOPIC
+						var dup = false
+
+						if (c.topicId){} else {
+							for (var i = 0; i < topicLessItems.length; i++) {
+								if (topicLessItems[i] == c.id) {
+									dup = true;
+									break;
+								} 
+							}
+
+							if (dup == true){
+								dup = false
+								return;
+							}
+
+							if (passive == true) {
+								displayCourseWork(c, true, false, false, false)
+							} else {
+								displayCourseWork(c, false, false, false, false)
+							}
+							
+							topicLessItems.push(c.id)
+							return;
+						}
+
+
+
 						// HERE!! IF THE TOPIC ID ISN'T THE SAME AS THE ITEM'S TOPIC ID:
 						if (topicId != courseItemId) {
 							return;
 						}
+
 
 						// If the topic is different from the previous one:
 						if (currentTopicName) {

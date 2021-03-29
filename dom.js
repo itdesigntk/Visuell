@@ -151,7 +151,7 @@ function displayCourseTopic (t, passive) {
 }
 
 // Display a coursework/material
-function displayCourseWork (work, passive, isTopicHeader, topic) {
+function displayCourseWork (work, passive, isTopicHeader, topic, hasTopic) {
     const wrap = document.querySelector('.assignmentList');
     const dummyWrap = document.querySelector('.DUMMYassignmentList');
 
@@ -218,6 +218,18 @@ function displayCourseWork (work, passive, isTopicHeader, topic) {
         pts = pts + 'pts'
     } else {
         pts = pts + 'pt'
+    }
+
+    if (hasTopic == false) {
+        if (passive == true) {
+            dummyWrap.insertBefore(helper_createAssignmentHTML(title, dueDate, pts, desc, workAtts), dummyWrap.firstChild)
+            saveCourseWork(work.courseId, dummyWrap.innerHTML)
+            return;
+        }
+    
+        wrap.insertBefore(helper_createAssignmentHTML(title, dueDate, pts, desc, workAtts), wrap.firstChild)
+        saveCourseWork(work.courseId, wrap.innerHTML)
+        return;
     }
 
     if (passive == true) {
