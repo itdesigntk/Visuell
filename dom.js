@@ -1,3 +1,5 @@
+var refresh;
+
 // Start 
 function startPage () {
     document.getElementsByClassName('courseName')[0].click()
@@ -8,7 +10,6 @@ function startPage () {
     });
     $('.js-example-basic-single').on('select2:select', function (e) {
         var data = e.params.data;
-        console.log(data);
 
         var index = Array.from(data.element.parentElement.children).indexOf(data.element)
 
@@ -18,6 +19,18 @@ function startPage () {
         var div = document.querySelector("body > span > span > span.select2-search.select2-search--dropdown > input")
         div.focus();
     });
+
+    setTimeout(function () {
+        refresh = setInterval(refreshSessionCourseWork, 30000)
+    }, 6000)
+    animateCourseFetch(true)
+}
+
+document.querySelector('.fetchLoaderwrapper').onclick = function () {
+    clearInterval(refresh);
+    refreshSessionCourseWork();
+
+    refresh = setInterval(refreshSessionCourseWork, 30000)
 }
 
 
@@ -265,6 +278,28 @@ function clearSessionCourseWork () {
     }
 }
 
+function refreshSessionCourseWork () {
+    if (document.getElementsByClassName('courseName')) {
+        Array.prototype.forEach.call(document.getElementsByClassName('courseName'), function(el) {
+            var idToRemove = el.classList[1]
+            localStorage.removeItem(idToRemove)
+            if (localStorage.removeItem(idToRemove) ) {} else {
+                //console.log('Successfully removed local coursework')
+            }
+
+            getCourseWork(idToRemove, true);
+
+        })
+
+        animateCourseFetch()
+        setTimeout(function() {
+            animateCourseFetch(true)
+        }, 4000)
+    }
+}
+
+
+
 // Save a course
 function saveCourseWork (id, HTML) {
     localStorage.setItem(id, HTML)
@@ -273,13 +308,59 @@ function saveCourseWork (id, HTML) {
 
 // ALL ANIMATIONS / UI 
 
-var button = document.querySelector('.classind');
+function animateCourseFetch (stopAnimating) {
+    document.querySelector('.fetchText').innerHTML = 'Fetching...'
+    var loader = document.querySelectorAll('.sk-cube-grid .sk-cube')
+    var loaderText = document.querySelector('.fetchText')
 
-button.onclick = switchClass
+    loader.forEach(function(tile) {
+        tile.classList.add("animating");
+    })
 
-function switchClass () {
+    if (stopAnimating == true) {
+        loader.forEach(function(tile) {
+            tile.classList.remove("animating");
+        })
+
+        document.querySelector('.fetchText').innerHTML = 'Fetched last at ' + moment().format('h:mm A')
+
+        indexOfCurrentEl = Array.from(document.querySelector('.sidebar').children).indexOf(document.querySelector('.courseName.active'))
+
+        setTimeout(function () {
+            document.querySelector('.sidebar').children[indexOfCurrentEl].click()
+        }, 1000)
+    }
+}
+animateCourseFetch()
+
+function expandSideBar () {
+    $(".innerwrap > span.material-icons").toggleClass("focused");
+
+    if (document.querySelector('.sidebar').style.width) {
+        document.querySelector('.sidebar').style.width = '0px';
+        setTimeout(function() {
+            $(".sidebar").toggleClass("expanded");
+            document.querySelector('.sidebar').style.width = null
+            document.querySelector('.sidebarwrapper').style.backgroundColor = null;
+        }, 301)
+        return;
+    }
+
+    document.querySelector('.sidebarwrapper').style.backgroundColor = "#f9f9f9"
+
+    $(".sidebar").toggleClass("expanded");
+    document.querySelector('.sidebar').style.width = "auto"
+    var widthTarget = document.querySelector('.sidebar').offsetWidth
+    document.querySelector('.sidebar').style.width = null
+
+    setTimeout(function () {
+        document.querySelector('.sidebar').style.width = widthTarget + "px"
+    }, 10)
+
 
 }
+document.querySelector("body > div.innerwrap > span").onclick = expandSideBar
+
 
 var wrapStatus;
 
@@ -313,13 +394,18 @@ function animateCourseSwitch (indexOfElToSwitchTo, wantClick, elRef) {
         wrap.style.animation = whooshOutLeft
 
         setTimeout(function() {
+            if (checkHTML() == true) {
+                wrap.style.animation = whooshInRight
+                //console.log('HTML is quick loaded')
+                return;
+            }
             var checkHTMLInterval = setInterval(function() {
                 if (checkHTML() == true) {
-                    console.log('wow')
+                    //console.log('HTML is ready')
                     wrap.style.animation = whooshInRight
                     clearInterval(checkHTMLInterval)
                 } 
-            }, 10);
+            }, 1);
         }, 200)
     }
 
@@ -328,13 +414,18 @@ function animateCourseSwitch (indexOfElToSwitchTo, wantClick, elRef) {
         wrap.style.animation = whooshOutRight
 
         setTimeout(function() {
+            if (checkHTML() == true) {
+                wrap.style.animation = whooshInLeft
+                //console.log('HTML is quick loaded')
+                return;
+            }
             var checkHTMLInterval = setInterval(function() {
                 if (checkHTML() == true) {
-                    console.log('wow')
+                    //console.log('HTML is ready')
                     wrap.style.animation = whooshInLeft
                     clearInterval(checkHTMLInterval)
                 } 
-            }, 10);
+            }, 1);
         }, 200)
     }
 
@@ -364,3 +455,31 @@ function checkHTML () {
 
     return wrapStatus;
 }
+
+var content;
+var now;
+
+function checkIfDummyIsActive() {
+    var wrap = document.querySelector('.DUMMYassignmentList');
+
+    now = wrap.innerHTML;
+
+    if (content) {
+        if (content == now) {
+            push = true
+        }
+        if (content != now) {
+            push = false
+        }
+    } else {
+        content = now
+        push = false
+    }
+
+    console.log(push)
+
+    return push
+}
+
+
+
