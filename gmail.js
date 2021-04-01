@@ -12,6 +12,7 @@ gapi.load("client:auth2", function() {
     gapi.auth2.init({
 		client_id: "659653087009-if2rcthrj1c6rtllo7bmsr8oioi1j24r.apps.googleusercontent.com"
 	}).then(function () {
+		//gapi.auth2.getAuthInstance().signOut()
 
 		gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
 		updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
@@ -22,7 +23,7 @@ gapi.load("client:auth2", function() {
 
 
 function authenticate() {
-    gapi.auth2.getAuthInstance().signIn({scope: "https://www.googleapis.com/auth/classroom.coursework.me.readonly https://www.googleapis.com/auth/classroom.coursework.students.readonly https://www.googleapis.com/auth/classroom.courseworkmaterials https://www.googleapis.com/auth/classroom.courseworkmaterials.readonly https://www.googleapis.com/auth/classroom.topics.readonly"}).then(function() { 
+    gapi.auth2.getAuthInstance().signIn({scope: " https://www.googleapis.com/auth/classroom.courses.readonly  https://www.googleapis.com/auth/classroom.coursework.me.readonly https://www.googleapis.com/auth/classroom.coursework.students.readonly https://www.googleapis.com/auth/classroom.courseworkmaterials https://www.googleapis.com/auth/classroom.topics.readonly"}).then(function() { 
         console.log("Sign-in successful"); 
     }, function(err) {console.error("Error signing in", err);});
 }
@@ -121,11 +122,14 @@ function getCourseList () {
 
 
 		console.log("Course List: ", courses);
-	})
+	}), function(error) {
+		console.error(error)
+	}
 }
 
 function getCourseWork (CID, passive) {
 	if (localStorage.getItem(CID) && passive != true) {
+		console.log("loading a saved course")
 		displaySavedCourseWork(CID);
 		return;
 	} 
@@ -133,7 +137,8 @@ function getCourseWork (CID, passive) {
 
 	// Make sure the DOM element is empty.
 	var wrap = document.querySelector('.assignmentList');
-    wrap.innerHTML = null
+
+	if (passive != true) wrap.innerHTML = null
 
 
 	// Write a function to get the course topics
