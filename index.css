@@ -113,7 +113,7 @@ body {
 }
 .sidebar.expanded {
     display: grid;
-    transition: 0.3s ease;
+    transition: 0.2s ease;
     overflow: hidden;
 }
 .sidebar.expanded::after {
@@ -344,6 +344,7 @@ body {
     margin: 5px auto 15px 25px;
     color: rgb(214, 214, 214);
     grid-column: span 3;
+    word-break: break-all;
 }
 .assignment > .attachments {
     margin: 0px 25px 20px 25px;
@@ -409,7 +410,10 @@ body {
         display:none;
     }
     .selectClassWrap {
-        margin:auto;
+        display: none;
+    }
+    .resourcesquare {
+        margin: 80px auto 0 auto;
     }
     .innerwrap {
         right: 0;
@@ -423,6 +427,9 @@ body {
     }
     .assignment > .topicHeader > .topicName {
         margin: 30px auto 20px auto;
+    }
+    .assignemt > .desc {
+        word-break: break-all;
     }
     .square > div.title {
         margin: 25px auto auto auto;
@@ -511,4 +518,58 @@ span.fetchText {
     color: #000000;
     font-weight: 600;
     margin: auto 20px auto 10px;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color:#181818;
+    }
+    ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+    }
+    ::-webkit-scrollbar-thumb {
+    background: #363636;
+    border-radius:20px;
+    }
+    ::-webkit-scrollbar-thumb:hover{
+    background: #000000;
+    }
+    ::-webkit-scrollbar-track{
+    background: #5a5a5a;
+    }
+
+    .assignment {
+        background-color: #202020;
+    }
+    .attachmentItem {
+        background-color:#191919;
+    }
+    .innerwrap > span.material-icons {
+        color: #9a9a9a;
+    }
+    span.fetchText {
+        color: #4e4e4e;
+    }
+    .sk-cube-grid .sk-cube {
+        background-color: black;
+    }
+    .sidebar {
+        color: #4e4e4e;
+    }
+    .sidebar > span.active {
+        color: #a7a7a7;
+    }
+    .assignment > .title {
+        color: rgb(140 140 140);
+    }
+    .assignment > .desc {
+        color: rgb(75, 75, 75);
+    }
+    .assignmentList > .topicHeader > .topicName{
+        color: #3e3e3e;
+    }
+    .sidebar.expanded::after, .innerwrap > span.material-icons.focused, .attachmentItem:hover {
+        background-color: black;
+    }
 }

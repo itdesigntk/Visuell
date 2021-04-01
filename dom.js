@@ -3,6 +3,10 @@ var refresh;
 // Start 
 function startPage () {
     document.getElementsByClassName('courseName')[0].click()
+    setTimeout(function(){
+        document.getElementsByClassName('courseName')[0].click()
+    }, 10)
+
     document.querySelector('.classind').style.opacity = '1'
 
     $(document).ready(function() {
@@ -77,6 +81,23 @@ function helper_createTopicHeaderHTML (name) {
     pushWrap.innerHTML = HTML
 
     return pushWrap
+} 
+
+function helper_assignClicksToTopics () {
+    Array.prototype.forEach.call(document.getElementsByClassName('courseName'), function(el) {
+        el.onclick = function () {
+            $('#mySelect2').val(this.innerHTML);
+    
+            var index = Array.from(this.parentElement.children).indexOf(this)
+            animateCourseSwitch(index, false, this)
+            expandSideBar()
+    
+            Array.prototype.forEach.call(document.getElementsByClassName('courseName'), function(el) {
+                el.classList.remove('active')
+            })
+            this.classList.add('active')
+        }
+    })
 }
 
 function helper_createSideBarHTML (classTitle, id) {
@@ -91,6 +112,7 @@ function helper_createSideBarHTML (classTitle, id) {
 
         var index = Array.from(this.parentElement.children).indexOf(this)
         animateCourseSwitch(index, false, this)
+        expandSideBar()
 
         Array.prototype.forEach.call(document.getElementsByClassName('courseName'), function(el) {
             el.classList.remove('active')
@@ -322,13 +344,9 @@ function animateCourseFetch (stopAnimating) {
             tile.classList.remove("animating");
         })
 
-        document.querySelector('.fetchText').innerHTML = 'Fetched last at ' + moment().format('h:mm A')
+        document.querySelector('.fetchText').innerHTML = 'Fetched at ' + moment().format('h:mm A')
 
         indexOfCurrentEl = Array.from(document.querySelector('.sidebar').children).indexOf(document.querySelector('.courseName.active'))
-
-        setTimeout(function () {
-            document.querySelector('.sidebar').children[indexOfCurrentEl].click()
-        }, 1000)
     }
 }
 animateCourseFetch()
@@ -337,16 +355,19 @@ function expandSideBar () {
     $(".innerwrap > span.material-icons").toggleClass("focused");
 
     if (document.querySelector('.sidebar').style.width) {
+
         document.querySelector('.sidebar').style.width = '0px';
         setTimeout(function() {
             $(".sidebar").toggleClass("expanded");
             document.querySelector('.sidebar').style.width = null
             document.querySelector('.sidebarwrapper').style.backgroundColor = null;
+            document.querySelector('.assignmentList').style.width = null;
         }, 301)
         return;
     }
 
-    document.querySelector('.sidebarwrapper').style.backgroundColor = "#f9f9f9"
+    document.querySelector('.assignmentList').style.width = document.querySelector('.assignmentList').offsetWidth + 'px';
+    document.querySelector('.sidebarwrapper').style.backgroundColor = "rgb(35 35 35)"
 
     $(".sidebar").toggleClass("expanded");
     document.querySelector('.sidebar').style.width = "auto"
