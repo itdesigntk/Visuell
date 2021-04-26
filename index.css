@@ -522,7 +522,7 @@ span.fetchText {
 
 @media (prefers-color-scheme: dark) {
     body {
-        background-color:#181818;
+        background-color: #202225;
     }
     ::-webkit-scrollbar {
     width: 10px;
@@ -536,14 +536,18 @@ span.fetchText {
     background: #000000;
     }
     ::-webkit-scrollbar-track{
-    background: #5a5a5a;
+    background: #202225;
     }
 
     .assignment {
-        background-color: #202020;
+        background-color: #313131;
     }
     .attachmentItem {
         background-color:#191919;
+    }
+    .attachmentItem:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgb(49, 49, 49), 0 0 0 5px rgb(25, 25, 25);
     }
     .innerwrap > span.material-icons {
         color: #9a9a9a;
@@ -561,7 +565,7 @@ span.fetchText {
         color: #a7a7a7;
     }
     .assignment > .title {
-        color: rgb(140 140 140);
+        color: rgb(146 146 146);
     }
     .assignment > .desc {
         color: rgb(75, 75, 75);

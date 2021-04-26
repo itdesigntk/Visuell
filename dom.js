@@ -184,12 +184,10 @@ function displayCourseTopic (t, passive) {
 
     if (passive == true) {
         dummyWrap.appendChild(helper_createTopicHeaderHTML(name))
-        saveCourseWork(t.courseId, dummyWrap.innerHTML)
         return;
     }
 
     wrap.appendChild(helper_createTopicHeaderHTML(name))
-    saveCourseWork(t.courseId, wrap.innerHTML)
 }
 
 // Display a coursework/material
@@ -204,8 +202,13 @@ function displayCourseWork (work, passive, isTopicHeader, topic, hasTopic) {
     }
 
 
-    if (currentCourseId && currentCourseId != queryCourseId && passive == true) {
-        dummyWrap.innerHTML = null;
+    if (currentCourseId && currentCourseId != queryCourseId) {
+        if (passive == true) {
+            saveCourseWork(currentCourseId, dummyWrap.innerHTML)
+            dummyWrap.innerHTML = null;
+        } else {
+            saveCourseWork(currentCourseId, wrap.innerHTML)
+        }
     }
 
     if (isTopicHeader == true) {
@@ -265,23 +268,19 @@ function displayCourseWork (work, passive, isTopicHeader, topic, hasTopic) {
     if (hasTopic == false) {
         if (passive == true) {
             dummyWrap.insertBefore(helper_createAssignmentHTML(title, dueDate, pts, desc, workAtts), dummyWrap.firstChild)
-            saveCourseWork(work.courseId, dummyWrap.innerHTML)
             return;
         }
     
         wrap.insertBefore(helper_createAssignmentHTML(title, dueDate, pts, desc, workAtts), wrap.firstChild)
-        saveCourseWork(work.courseId, wrap.innerHTML)
         return;
     }
 
     if (passive == true) {
         dummyWrap.appendChild(helper_createAssignmentHTML(title, dueDate, pts, desc, workAtts))
-        saveCourseWork(work.courseId, dummyWrap.innerHTML)
         return;
     }
 
     wrap.appendChild(helper_createAssignmentHTML(title, dueDate, pts, desc, workAtts))
-    saveCourseWork(work.courseId, wrap.innerHTML)
 }
 
 
@@ -324,6 +323,7 @@ function refreshSessionCourseWork () {
 
 // Save a course
 function saveCourseWork (id, HTML) {
+    console.log(`Saving course: ${id}`)
     localStorage.setItem(id, HTML)
 }
 

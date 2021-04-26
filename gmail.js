@@ -89,6 +89,7 @@ function getCourseList () {
 					wrap.appendChild(helper_createSideBarHTML(courses[i].name, courses[i].id))
 					if (last == true) {
 						check = setTimeout(function(){
+							console.log("Starting page")
 							startPage()
 						}, 1500)
 						return;
@@ -132,7 +133,9 @@ function getCourseWork (CID, passive) {
 		console.log("loading a saved course")
 		displaySavedCourseWork(CID);
 		return;
-	} 
+	} else {
+		console.log(CID, passive)
+	}
 	// Ok, here we go. Trying to make this as easy to read as possible.
 
 	// Make sure the DOM element is empty.
